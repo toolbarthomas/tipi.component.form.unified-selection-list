@@ -1,0 +1,50 @@
+@mixin core_form_unified-selection-list()
+{
+    .selection-list {
+        position: relative;
+    }
+
+    .selection-list-toggle {
+        display: none;
+        @include user-select(none);
+        cursor: pointer;
+
+        .__selection-list--ready & {
+            display: block;
+        }
+    }
+
+    .selection-list-wrapper {
+        .__selection-list--ready & {
+            width: 0;
+            height: 0;
+            overflow: hidden;
+        }
+
+        .__selection-list--ready.__selection-list--active & {
+            visibility: visible;
+            width: auto;
+            height: auto;
+        }
+    }
+
+    .selection-list-selection {
+        display: none;
+        cursor: pointer;
+
+        &.__selection-list-selection--checked {
+            display: inline-block;
+        }
+    }
+
+    .selection-list-selection-remove {
+        @include user-select(none);
+
+        .selection-list--removeable & {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: red;
+        }
+    }
+}

@@ -1,0 +1,33 @@
+{% extends "layouts/base.twig" %}
+
+{% block content %}
+    <section id="unified-selection-list" class="fluid">
+        <form action="#" method="post">
+            <div class="selection-list selection-list--removeable">
+                <div class="selection-list-toggle">
+                    Selection list toggle
+                    <span class="selection-list-glyph-wrapper">
+                        <span class="selection-list-glyph"></span>
+                    </span>
+                </div>
+                <div class="selection-list-wrapper">
+                    <div class="selection-list-panel">
+                        {% for i in 0..10 %}
+                            <div class="selection-list-input-toggle">
+                                <label for="selection-list-{{ i }}">
+                                    <span class="selection-list-input-control">
+                                        <input type="checkbox" id="selection-list-{{ i }}" name="selection-list[]">
+                                    </span>
+                                    <span class="selection-list-input-label">
+                                        Selection list item {{ i }}
+                                    </span>
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="selection-list-selections"></div>
+            </div>
+        </form>
+    </section>
+{% endblock %}
