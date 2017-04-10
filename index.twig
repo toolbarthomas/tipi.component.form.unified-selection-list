@@ -3,22 +3,27 @@
 {% block content %}
     <section id="unified-selection-list" class="fluid">
         <form action="#" method="post">
-            <div class="selection-list selection-list--removeable">
+            <div class="selection-list selection-list--removeable" data-selection-list-selection-label-prefix="(" data-selection-list-selection-label-suffix=" items geselecteerd )">
                 <div class="selection-list-toggle">
-                    Selection list toggle
-                    <span class="selection-list-glyph-wrapper">
-                        <span class="selection-list-glyph"></span>
+                    <span class="selection-list-toggle-label">
+                        Selection list mighty toggle
+                    </span>
+                    <span class="selection-list-toggle-glyph-wrapper">
+                        <svg class="selection-list-toggle-glyph glyph glyph-chevron-down" role="img"><use xlink:href="#glyph-chevron-down"></use></svg>
                     </span>
                 </div>
                 <div class="selection-list-wrapper">
                     <div class="selection-list-panel">
                         {% for i in 0..10 %}
-                            <div class="selection-list-input-toggle">
-                                <label for="selection-list-{{ i }}">
-                                    <span class="selection-list-input-control">
+                            <div class="selection-list-checkbox">
+                                <label>
+                                    <span class="selection-list-checkbox-glyph-wrapper">
+                                        <span class="selection-list-checkbox-glyph"></span>
+                                    </span>
+                                    <span class="selection-list-checkbox-control">
                                         <input type="checkbox" id="selection-list-{{ i }}" name="selection-list[]">
                                     </span>
-                                    <span class="selection-list-input-label">
+                                    <span class="selection-list-checkbox-label">
                                         Selection list item {{ i }}
                                     </span>
                                 </label>
@@ -26,7 +31,7 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div class="selection-list-selections"></div>
+            <div class="selection-list-selections"></div>
             </div>
         </form>
     </section>

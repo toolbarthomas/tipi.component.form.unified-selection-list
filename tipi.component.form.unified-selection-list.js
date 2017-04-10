@@ -3,8 +3,9 @@
         classes : {
             selection_list : 'selection-list',
             selection_list_toggle : 'selection-list-toggle',
-            selection_list_input_toggle : 'selection-list-input-toggle',
-            selection_list_input_label : 'selection-list-input-label',
+            selection_list_toggle_label : 'selection-list-toggle-label',
+            selection_list_checkbox : 'selection-list-checkbox',
+            selection_list_checkbox_label : 'selection-list-checkbox-label',
             selection_list_selections : 'selection-list-selections',
             selection_list_selection : 'selection-list-selection',
             selection_list_selection_remove : 'selection-list-selection-remove'
@@ -12,14 +13,16 @@
         states : {
             ready : '__selection-list--ready',
             active : '__selection-list--active',
-            input_focus : '__selection-list-input--focus',
-            input_checked : '__selection-list-input--checked',
-            toggle_checked : '__selection-list-input-toggle--checked',
+            checkbox_focus : '__selection-list-checkbox--focus',
+            checkbox_checked : '__selection-list-checkbox--checked',
             selection_checked : '__selection-list-selection--checked'
         },
         attributes : {
-            input_index : 'selection-list-input-index',
-            input_toggle_label : 'selection-list-input-toggle-label'
+            checkbox_index : 'selection-list-checkbox-index',
+            checkbox_label : 'selection-list-checkbox-label',
+            selection_label : 'selection-list-selection-label',
+            selection_label_prefix : 'selection-list-selection-label-prefix',
+            selection_label_suffix : 'selection-list-selection-label-suffix'
         }
     };
 
@@ -46,18 +49,23 @@
             {
                 closeSelectionList(selection_list);
             },
-            'tipi.selectionList.focus' : function(event, checkbox)
+            'tipi.selectionList.toggle' : function(event, input)
             {
-                focusSelectionListCheckbox(checkbox);
+                toggleSelectionListCheckbox(input);
             },
-            'tipi.selectionList.blur' : function(event, checkbox)
+            'tipi.selectionList.focus' : function(event, input)
             {
-                blurSelectionListCheckbox(checkbox, selection_list);
+                focusSelectionListCheckbox(input);
             },
-            'tipi.selectionList.change' : function(event, checkbox, selection_list)
+            'tipi.selectionList.blur' : function(event, input)
             {
-                changeSelectionListCheckbox(checkbox, selection_list);
-                updateSelectionListSelections(checkbox, selection_list);
+                blurSelectionListCheckbox(input, selection_list);
+            },
+            'tipi.selectionList.change' : function(event, input, selection_list)
+            {
+                changeSelectionListCheckbox(input, selection_list);
+                updateSelectionListSelections(input, selection_list);
+                countSelectionListSelection(selection_list);
             },
             'tipi.selectionList.update' : function(event, selection_list)
             {
@@ -80,10 +88,11 @@
         selection_list.each(function() {
             var selection_list = $(this);
             var selection_list_toggle = selection_list.find('.' + data.classes.selection_list_toggle);
-            var selection_list_input_toggle = selection_list.find('.' + data.classes.selection_list_input_toggle);
-            var selection_list_checkbox = selection_list.find('input:checkbox');
+            var selection_list_checkbox = selection_list.find('.' + data.classes.selection_list_checkbox);
+            var selection_list_label = selection_list.find('label');
+            var selection_list_input = selection_list.find('input:checkbox');
 
-            if(selection_list_toggle.length === 0 || selection_list_input_toggle.length === 0)
+            if(selection_list_toggle.length === 0 || selection_list_checkbox.length === 0)
             {
                 return;
             }
@@ -108,26 +117,41 @@
 
             selection_list_checkbox.on({
                 click : function(event) {
+                    var checkbox = $(this);
+                    var input = checkbox.find('input:checkbox');
+
+                    $(document).trigger('tipi.selectionList.toggle', [input]);
+                }
+            });
+
+            selection_list_label.on({
+                click : function(event) {
+                    event.preventDefault();
+                }
+            });
+
+            selection_list_input.on({
+                click : function(event) {
                     event.stopImmediatePropagation();
                 },
                 focus : function() {
-                    var checkbox = $(this);
-                    var selection_list = checkbox.closest('.' + data.classes.selection_list);
+                    var input = $(this);
+                    var selection_list = input.closest('.' + data.classes.selection_list);
 
                     $(document).trigger('tipi.selectionList.open', [selection_list]);
-                    $(document).trigger('tipi.selectionList.focus', [checkbox, selection_list]);
+                    $(document).trigger('tipi.selectionList.focus', [input, selection_list]);
                 },
                 blur : function() {
-                    var checkbox = $(this);
-                    var selection_list = checkbox.closest('.' + data.classes.selection_list);
+                    var input = $(this);
+                    var selection_list = input.closest('.' + data.classes.selection_list);
 
-                    $(document).trigger('tipi.selectionList.blur', [checkbox, selection_list]);
+                    $(document).trigger('tipi.selectionList.blur', [input, selection_list]);
                 },
                 change : function() {
-                    var checkbox = $(this);
-                    var selection_list = checkbox.closest('.' + data.classes.selection_list);
+                    var input = $(this);
+                    var selection_list = input.closest('.' + data.classes.selection_list);
 
-                    $(document).trigger('tipi.selectionList.change', [checkbox, selection_list]);
+                    $(document).trigger('tipi.selectionList.change', [input, selection_list]);
                 }
             });
 
@@ -149,62 +173,77 @@
     {
         selection_list.removeClass(data.states.active);
 
-        var checkbox = selection_list.find('input:checkbox');
+        var input = selection_list.find('input:checkbox');
+        if(input.length === 0)
+        {
+            return;
+        }
+    }
+
+    function toggleSelectionListCheckbox(input)
+    {
+        if(input.prop('checked'))
+        {
+            input.prop('checked', false).blur();
+        }
+        else
+        {
+            input.prop('checked', true).focus();
+        }
+
+        input.trigger('change');
+    }
+
+    function focusSelectionListCheckbox(input)
+    {
+        var checkbox = input.closest('.' + data.classes.selection_list_checkbox);
+
         if(checkbox.length === 0)
         {
             return;
         }
+
+        checkbox.addClass(data.states.checkbox_focus);
     }
 
-    function focusSelectionListCheckbox(checkbox)
+    function blurSelectionListCheckbox(input)
     {
-        var input_toggle = checkbox.closest('.' + data.classes.selection_list_input_toggle);
+        var checkbox = input.closest('.' + data.classes.selection_list_checkbox);
 
-        if(input_toggle.length === 0)
+        if(checkbox.length === 0)
         {
             return;
         }
 
-        input_toggle.addClass(data.states.input_focus);
+        checkbox.removeClass(data.states.checkbox_focus);
     }
 
-    function blurSelectionListCheckbox(checkbox)
+    function changeSelectionListCheckbox(input)
     {
-        var input_toggle = checkbox.closest('.' + data.classes.selection_list_input_toggle);
+        var checkbox = input.closest('.' + data.classes.selection_list_checkbox);
 
-        if(input_toggle.length === 0)
+        if(checkbox.length === 0)
         {
             return;
         }
 
-        input_toggle.removeClass(data.states.input_focus);
-    }
-
-    function changeSelectionListCheckbox(checkbox)
-    {
-        var input_toggle = checkbox.closest('.' + data.classes.selection_list_input_toggle);
-
-        if(input_toggle.length === 0)
+        if(input.prop('checked'))
         {
-            return;
-        }
-
-        if(checkbox.prop('checked')) {
-            input_toggle.addClass(data.states.toggle_checked);
+            checkbox.addClass(data.states.checkbox_checked);
         } else {
-            input_toggle.removeClass(data.states.toggle_checked);
+            checkbox.removeClass(data.states.checkbox_checked);
         }
     }
 
     function getSelectionListCheckboxIndex(checkbox, selection_list)
     {
-        var index = checkbox.data(data.attributes.input_index);
+        var index = checkbox.data(data.attributes.checkbox_index);
 
         //Check if we have an actual index
         if(typeof index == 'undefined')
         {
             generateSelectionListCheckboxIndex(selection_list);
-            index = checkbox.data(data.attributs.input_index);
+            index = checkbox.data(data.attributs.checkbox_index);
         }
 
         if(isNaN(parseFloat(index)))
@@ -227,7 +266,7 @@
         //Generate a index on each checkbox so we can select the correct selection_list_selection item
         selection_list_checkbox.each(function(index) {
             var checkbox = $(this);
-            checkbox.data(data.attributes.input_index, index);
+            checkbox.data(data.attributes.checkbox_index, index);
         });
     }
 
@@ -246,22 +285,22 @@
         }
 
         //Generate our selections based on the available input toggles
-        var selection_list_input_toggle = selection_list.find('.' + data.classes.selection_list_input_toggle);
+        var selection_list_checkbox = selection_list.find('.' + data.classes.selection_list_checkbox);
         var checkbox = selection_list.find('input:checkbox');
 
-        if(selection_list_input_toggle.length === 0)
+        if(selection_list_checkbox.length === 0)
         {
             return;
         }
 
-        selection_list_input_toggle.each(function(index) {
+        selection_list_checkbox.each(function(index) {
             var toggle = $(this);
 
             //Define a label we can use for setting the selections
-            var label = toggle.data(data.attributes.input_toggle_label);
+            var label = toggle.data(data.attributes.checkbox_label);
             if(typeof label === 'undefined')
             {
-                label = toggle.find('.' + data.classes.selection_list_input_label).html();
+                label = toggle.find('.' + data.classes.selection_list_checkbox_label).html();
             }
 
             selection_list_selections.append('<div class="' + data.classes.selection_list_selection + '">' + label + '<span class="' + data.classes.selection_list_selection_remove + '"></span></div>');
@@ -287,9 +326,9 @@
         });
     }
 
-    function updateSelectionListSelections(checkbox, selection_list)
+    function updateSelectionListSelections(input, selection_list)
     {
-        var index = getSelectionListCheckboxIndex(checkbox, selection_list);
+        var index = getSelectionListCheckboxIndex(input, selection_list);
 
         if(typeof index === 'undefined')
         {
@@ -302,7 +341,7 @@
             return;
         }
 
-        if(checkbox.prop('checked'))
+        if(input.prop('checked'))
         {
             selection_list_selection.addClass(data.states.selection_checked);
         }
@@ -310,6 +349,47 @@
         {
             selection_list_selection.removeClass(data.states.selection_checked);
         }
+    }
+
+    function countSelectionListSelection(selection_list)
+    {
+        var toggle_label = selection_list.find('.' + data.classes.selection_list_toggle_label);
+        if(toggle_label.length === 0)
+        {
+           return;
+        }
+
+        var label = selection_list.data(data.attributes.selection_label);
+        //Check if we have defined a label with a data attribute, or use the label from innerHtml and cache it!
+        if(typeof label === 'undefined')
+        {
+            label = toggle_label.html();
+            selection_list.data(data.attributes.selection_label, label);
+        }
+
+        var prefix = selection_list.data(data.attributes.selection_label_prefix);
+        if(typeof prefix === 'undefined')
+        {
+            prefix = '';
+        }
+
+         var suffix = selection_list.data(data.attributes.selection_label_suffix);
+         if(typeof suffix === 'undefined')
+         {
+             suffix = '';
+         }
+
+         var input = selection_list.find('input:checkbox');
+         var count = input.filter(':checked').length;
+
+         if(count === 0)
+         {
+            toggle_label.html(label);
+         }
+         else
+         {
+            toggle_label.html(' ' + label + prefix + count + suffix);
+         }
     }
 
     function clickedWithinSelectionList(event, selection_list)
