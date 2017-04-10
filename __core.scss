@@ -141,6 +141,8 @@
             position: relative;
             display: inline-block;
             vertical-align: middle;
+            cursor: pointer;
+
             @include transform(
                 rotate(45deg)
             );
