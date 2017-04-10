@@ -1,4 +1,91 @@
-@mixin unified-selection-list-layout()
-{
+@mixin unified-selection-list-layout(
+    $selector: null,
+    $toggle-height: false,
+    $toggle-line-height: false,
+    $toggle-gutter: false,
+    $toggle-glyph-wrapper-width: false,
+    $wrapper-spacing: false,
+    $panel-gutter: false,
+    $checkbox-gutter: false,
+    $checkbox-glyph-wrapper-width: false,
+    $selection-gutter: false,
+    $selection-spacing: false
+) {
+    .selection-list {
+        &#{$selector} {
+            .selection-list-toggle {
+                @if $toggle-height !=  false
+                {
+                    height: $toggle-height;
+                }
 
+                @if $toggle-line-height != false
+                {
+                    line-height: $toggle-line-height;
+                }
+
+                @if $toggle-gutter != false
+                {
+                    padding-left: $toggle-gutter;
+                    padding-right: $toggle-gutter;
+                }
+
+                @if $toggle-glyph-wrapper-width != false {
+                    padding-right: $toggle-glyph-wrapper-width;
+                }
+            }
+
+            .selection-list-toggle-glyph-wrapper {
+                @if $toggle-glyph-wrapper-width != false
+                {
+                    right: $toggle-glyph-wrapper-width / 2;
+                }
+            }
+
+            .selection-list-wrapper {
+                @if $wrapper-spacing != false
+                {
+                    padding-top: $wrapper-spacing;
+                }
+            }
+
+            .selection-list-panel {
+                @if $panel-gutter != false
+                {
+                    padding: $panel-gutter;
+                }
+            }
+
+            .selection-list-checkbox {
+                @if $checkbox-gutter != false
+                {
+                    padding: $checkbox-gutter;
+                }
+
+                @if $checkbox-glyph-wrapper-width != false
+                {
+                    padding-left: $checkbox-glyph-wrapper-width;
+                }
+            }
+
+            .selection-list-checkbox-glyph-wrapper {
+                @if $checkbox-glyph-wrapper-width != false
+                {
+                    left: $checkbox-glyph-wrapper-width / 2;
+                }
+            }
+
+            .selection-list-selection {
+                @if $selection-gutter != false
+                {
+                    padding: $selection-gutter;
+                }
+
+                @if $selection-spacing != false
+                {
+                    margin: $selection-spacing;
+                }
+            }
+        }
+    }
 }
