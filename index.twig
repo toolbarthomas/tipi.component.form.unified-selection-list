@@ -21,7 +21,7 @@
                                         <span class="selection-list-checkbox-glyph"></span>
                                     </span>
                                     <span class="selection-list-checkbox-control">
-                                        <input type="checkbox" id="selection-list-{{ i }}" name="selection-list[]">
+                                        <input type="checkbox" id="selection-list-{{ i }}" name="selection-list[]" {{ i <= 3 ? ' checked' : '' }}>
                                     </span>
                                     <span class="selection-list-checkbox-label">
                                         Selection list item {{ i }}

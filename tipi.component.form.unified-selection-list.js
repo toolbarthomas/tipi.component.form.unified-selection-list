@@ -15,6 +15,7 @@
             active : '__selection-list--active',
             checkbox_focus : '__selection-list-checkbox--focus',
             checkbox_checked : '__selection-list-checkbox--checked',
+            selections_active : '__selection-list-selections--active',
             selection_checked : '__selection-list-selection--checked'
         },
         attributes : {
@@ -61,9 +62,9 @@
             {
                 blurUnifiedSelectionListCheckbox(input, selection_list);
             },
-            'tipi.unifiedSelectionList.change' : function(event, input, selection_list)
+            'tipi.unifiedSelectionList.change' : function(event, selection_list, input)
             {
-                changeUnifiedSelectionListCheckbox(input, selection_list);
+                changeUnifiedSelectionListCheckbox(input);
                 updateUnifiedSelectionListSelections(input, selection_list);
                 countUnifiedSelectionListSelection(selection_list);
             },
@@ -71,10 +72,13 @@
             {
                 generateSelectionListSelections(selection_list);
             },
-            'tipi.selectionList.init' : function(event, selection_list)
+            'tipi.selectionList.init' : function(event, selection_list, input)
             {
                 generateUnifiedSelectionListCheckboxIndex(selection_list);
                 generateSelectionListSelections(selection_list);
+                changeUnifiedSelectionListCheckbox(input);
+                updateUnifiedSelectionListSelections(input, selection_list);
+                countUnifiedSelectionListSelection(selection_list);
             }
         });
 
@@ -151,7 +155,7 @@
                     var input = $(this);
                     var selection_list = input.closest('.' + data.classes.selection_list);
 
-                    $(document).trigger('tipi.unifiedSelectionList.change', [input, selection_list]);
+                    $(document).trigger('tipi.unifiedSelectionList.change', [selection_list, input]);
                 }
             });
 
@@ -159,7 +163,7 @@
             selection_list.addClass(data.states.ready);
 
             //Init the current selection_list
-            $(document).trigger('tipi.selectionList.init', [selection_list]);
+            $(document).trigger('tipi.selectionList.init', [selection_list, selection_list_input]);
         });
 
     }
@@ -220,19 +224,27 @@
 
     function changeUnifiedSelectionListCheckbox(input)
     {
-        var checkbox = input.closest('.' + data.classes.selection_list_checkbox);
+        input.each(function() {
+            var input = $(this);
+            var checkbox = input.closest('.' + data.classes.selection_list_checkbox);
 
-        if(checkbox.length === 0)
-        {
-            return;
-        }
+            if(checkbox.length === 0)
+            {
+                return;
+            }
 
-        if(input.prop('checked'))
-        {
-            checkbox.addClass(data.states.checkbox_checked);
-        } else {
-            checkbox.removeClass(data.states.checkbox_checked);
-        }
+            if(input.prop('disabled'))
+            {
+                return;
+            }
+
+            if(input.prop('checked'))
+            {
+                checkbox.addClass(data.states.checkbox_checked);
+            } else {
+                checkbox.removeClass(data.states.checkbox_checked);
+            }
+        });
     }
 
     function getSelectionListCheckboxIndex(checkbox, selection_list)
@@ -286,7 +298,7 @@
 
         //Generate our selections based on the available input toggles
         var selection_list_checkbox = selection_list.find('.' + data.classes.selection_list_checkbox);
-        var checkbox = selection_list.find('input:checkbox');
+        var input = selection_list.find('input:checkbox');
 
         if(selection_list_checkbox.length === 0)
         {
@@ -320,35 +332,43 @@
                 var selection = $(this).closest('.' + data.classes.selection_list_selection);
                 var index = selection.index();
 
+                if(input.prop('disabled'))
+                {
+                    return;
+                }
+
                 //Unchecked the connected checkbox
-                checkbox.eq(index).prop('checked', false).trigger('change');
+                input.eq(index).prop('checked', false).trigger('change');
             }
         });
     }
 
     function updateUnifiedSelectionListSelections(input, selection_list)
     {
-        var index = getSelectionListCheckboxIndex(input, selection_list);
+        input.each(function() {
+            var input = $(this);
+            var index = getSelectionListCheckboxIndex(input, selection_list);
 
-        if(typeof index === 'undefined')
-        {
-            return;
-        }
+            if(typeof index === 'undefined')
+            {
+                return;
+            }
 
-        var selection_list_selection = selection_list.find('.' + data.classes.selection_list_selection).eq(index);
-        if(selection_list_selection.length === 0)
-        {
-            return;
-        }
+            var selection_list_selection = selection_list.find('.' + data.classes.selection_list_selection).eq(index);
+            if(selection_list_selection.length === 0)
+            {
+                return;
+            }
 
-        if(input.prop('checked'))
-        {
-            selection_list_selection.addClass(data.states.selection_checked);
-        }
-        else
-        {
-            selection_list_selection.removeClass(data.states.selection_checked);
-        }
+            if(input.prop('checked'))
+            {
+                selection_list_selection.addClass(data.states.selection_checked);
+            }
+            else
+            {
+                selection_list_selection.removeClass(data.states.selection_checked);
+            }
+        });
     }
 
     function countUnifiedSelectionListSelection(selection_list)
@@ -385,10 +405,14 @@
          if(count === 0)
          {
             toggle_label.html(label);
+
+            selection_list.removeClass(data.states.selections_active);
          }
          else
          {
             toggle_label.html(' ' + label + prefix + count + suffix);
+
+            selection_list.addClass(data.states.selections_active);
          }
     }
 
