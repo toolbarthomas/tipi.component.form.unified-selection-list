@@ -1,4 +1,455 @@
-@mixin unified-selection-list-style()
-{
+@mixin unified-selection-list-style(
+    $selector: null,
+    $toggle-background-color: false,
+    $toggle-background-color--hover: false,
+    $toggle-background-color--active: false,
+    $toggle-color: false,
+    $toggle-color--hover: false,
+    $toggle-color--active: false,
+    $toggle-border: false,
+    $toggle-border-color--hover: false,
+    $toggle-border-color--active: false,
+    $toggle-border-radius: false,
+    $toggle-border-radius--hover: false,
+    $toggle-border-radius--active: false,
+    $toggle-box-shadow: false,
+    $toggle-box-shadow--hover: false,
+    $toggle-box-shadow--active: false,
+    $toggle-glyph-width: 10px,
+    $toggle-glyph-height: 6px,
+    $toggle-glyph-color: false,
+    $toggle-glyph-color--hover: false,
+    $toggle-glyph-color--active: false,
+    $panel-background-color: false,
+    $panel-border: false,
+    $panel-box-shadow: false,
+    $panel-border-radius: false,
+    $checkbox-background-color: false,
+    $checkbox-background-color--hover: false,
+    $checkbox-background-color--focus: false,
+    $checkbox-background-color--checked: false,
+    $checkbox-color: false,
+    $checkbox-color--hover: false,
+    $checkbox-color--focus: false,
+    $checkbox-color--checked: false,
+    $checkbox-border: false,
+    $checkbox-border-color--hover: false,
+    $checkbox-border-color--focus: false,
+    $checkbox-border-color--checked: false,
+    $checkbox-glyph-color: false,
+    $checkbox-glyph-border-radius: false,
+    $checkbox-glyph-width: 10px,
+    $checkbox-glyph-height: 6px,
+    $checkbox-glyph-stroke-width: 2px,
+    $selection-background-color: $primary-color,
+    $selection-background-color--hover: $primary-color--hover,
+    $selection-color: $body-color,
+    $selection-color--hover: $body-color,
+    $selection-border: solid 2px shade($primary-color, 20%),
+    $selection-border-color--hover: false,
+    $selection-border-radius: false,
+    $selection-border-radius--hover: false,
+    $selection-box-shadow: false,
+    $selection-box-shadow--hover: false,
+    $selection-remove-width: 12px,
+    $selection-remove-height: 12px,
+    $selection-remove-stroke-width: 2px,
+    $selection-remove-color: false,
+    $selection-remove-color--hover: false,
+    $hover-prefix: '.no-touchevents',
+    $transitions: false,
+    $transition-timing: 240ms,
+    $transition-duration: ease-in-out,
+    $transition-delay: 0ms
+) {
+    .selection-list {
+        &#{$selector} {
+            .selection-list-toggle {
+                @if $toggle-background-color != false
+                {
+                    background-color: $toggle-background-color;
+                }
 
+                @if $toggle-color != false
+                {
+                    color: $toggle-color;
+                }
+
+                @if $toggle-border != false
+                {
+                    border: $toggle-border;
+                }
+
+                @if $toggle-border-radius != false
+                {
+                    border-radius: $toggle-border-radius;
+                }
+
+                @if $toggle-box-shadow != false
+                {
+                    box-shadow: $toggle-box-shadow;
+                }
+
+                @if $transitions != false
+                {
+                    @include transition(
+                        (background-color $transition-timing $transition-duration $transition-delay),
+                        (color $transition-timing $transition-duration $transition-delay),
+                        (border-color $transition-timing $transition-duration $transition-delay),
+                        (box-shadow $transition-timing $transition-duration $transition-delay)
+                    );
+                }
+
+                #{$hover-prefix} &:hover {
+                    @if $toggle-background-color--hover != false
+                    {
+                        background-color: $toggle-background-color--hover;
+                    }
+
+                    @if $toggle-color--hover != false
+                    {
+                        color: $toggle-color--hover;
+                    }
+
+                    @if $toggle-border-color--hover != false
+                    {
+                        border: $toggle-border-color--hover;
+                    }
+
+                    @if $toggle-border-radius--hover != false
+                    {
+                        border-radius: $toggle-border-radius--hover;
+                    }
+
+                    @if $toggle-box-shadow--hover != false
+                    {
+                        box-shadow: $toggle-box-shadow--hover;
+                    }
+                }
+
+                .__selection-list--active & {
+                    @if $toggle-background-color--active != false
+                    {
+                        background-color: $toggle-background-color--active;
+                    }
+
+                    @if $toggle-color--active != false
+                    {
+                        color: $toggle-color--active;
+                    }
+
+                    @if $toggle-border-color--active != false
+                    {
+                        border: $toggle-border-color--active;
+                    }
+
+                    @if $toggle-border-radius--active != false
+                    {
+                        border-radius: $toggle-border-radius--active;
+                    }
+
+                    @if $toggle-box-shadow--active != false
+                    {
+                        box-shadow: $toggle-box-shadow--active;
+                    }
+                }
+            }
+
+            .selection-list-toggle-glyph {
+                @if $toggle-glyph-width != false
+                {
+                    width: $toggle-glyph-width;
+                }
+
+                @if $toggle-glyph-height != false
+                {
+                    height: $toggle-glyph-height;
+                }
+
+                @if $toggle-glyph-color != false
+                {
+                    fill: $toggle-glyph-color;
+                }
+
+                @if $transitions != false
+                {
+                    @include transition(
+                        (fill $transition-timing $transition-duration $transition-delay)
+                    );
+                }
+            }
+
+            #{$hover-prefix} & .selection-list-toggle:hover .selection-list-toggle-glyph {
+                @if $toggle-glyph-color--hover != false
+                {
+                    fill: $toggle-glyph-color--hover;
+                }
+            }
+
+            &.__selection-list--active .selection-list-toggle-glyph {
+                @if $toggle-glyph-color--active != false
+                {
+                    fill: $toggle-glyph-color--active;
+                }
+            }
+
+            .selection-list-panel {
+                @if $panel-background-color != false
+                {
+                    background-color: $panel-background-color;
+                }
+
+                @if $panel-border != false
+                {
+                    border: $panel-border;
+                }
+
+                @if $panel-box-shadow != false
+                {
+                    box-shadow: $panel-box-shadow;
+                }
+
+                @if $panel-border-radius != false
+                {
+                    border-radius: $panel-border-radius;
+                }
+            }
+
+            .selection-list-checkbox {
+                @if $checkbox-background-color != false
+                {
+                    background-color: $checkbox-background-color;
+                }
+
+                @if $checkbox-color != false
+                {
+                    color: $checkbox-color;
+                }
+
+                @if $checkbox-border != false
+                {
+                    &:nth-child(1n+2) {
+                        border-top: $checkbox-border;
+                    }
+                }
+
+                @if $transitions != false
+                {
+                    @include transition(
+                        (background-color $transition-timing $transition-duration $transition-delay),
+                        (color $transition-timing $transition-duration $transition-delay),
+                        (border-color $transition-timing $transition-duration $transition-delay)
+                    );
+                }
+            }
+
+            #{$hover-prefix} & .selection-list-checkbox:hover {
+                @if $checkbox-background-color--hover != false
+                {
+                    background-color: $checkbox-background-color--hover;
+                }
+
+                @if $checkbox-color--hover != false
+                {
+                    color: $checkbox-color--hover;
+                }
+
+                @if $checkbox-border-color--hover != false
+                {
+                    border-color: $checkbox-border-color--hover;
+                }
+            }
+
+            .__selection-list-checkbox--focus {
+                @if $checkbox-background-color--focus != false
+                {
+                    background-color: $checkbox-background-color--focus;
+                }
+
+                @if $checkbox-color--focus != false
+                {
+                    color: $checkbox-color--focus;
+                }
+
+                @if $checkbox-border-color--focus != false
+                {
+                    border-color: $checkbox-border-color--focus;
+                }
+            }
+
+            .__selection-list-checkbox--checked {
+                @if $checkbox-background-color--checked != false
+                {
+                    background-color: $checkbox-background-color--checked;
+                }
+
+                @if $checkbox-color--checked != false
+                {
+                    color: $checkbox-color--checked;
+                }
+
+                @if $checkbox-border-color--checked != false
+                {
+                    border-color: $checkbox-border-color--checked;
+                }
+            }
+
+            .selection-list-checkbox-glyph {
+                @if $checkbox-glyph-width != false
+                {
+                    width: $checkbox-glyph-width;
+                }
+
+                @if $checkbox-glyph-height != false
+                {
+                    height: $checkbox-glyph-height;
+                }
+
+                @if $transitions != false
+                {
+                    @include transition(
+                        (opacity $transition-timing $transition-duration $transition-delay),
+                        (transform $transition-timing $transition-duration $transition-delay)
+                    );
+                }
+
+                &:before,
+                &:after {
+                    @if $checkbox-glyph-color != false
+                    {
+                        background-color: $checkbox-glyph-color;
+                    }
+
+                    @if $checkbox-glyph-border-radius != false
+                    {
+                        border-radius: $checkbox-glyph-border-radius;
+                    }
+                }
+
+                @if $checkbox-glyph-stroke-width != false
+                {
+                    &:before {
+                        height: $checkbox-glyph-stroke-width;
+                    }
+
+                    &:after {
+                        width: $checkbox-glyph-stroke-width;
+                    }
+                }
+            }
+
+            .selection-list-selection {
+                @if $selection-background-color != false
+                {
+                    background-color: $selection-background-color;
+                }
+
+                @if $selection-color != false
+                {
+                    color: $selection-color;
+                }
+
+                @if $selection-border != false
+                {
+                    border: $selection-border;
+                }
+
+                @if $selection-border-radius != false
+                {
+                    border-radius: $selection-border-radius;
+                }
+
+                @if $selection-box-shadow != false
+                {
+                    box-shadow: $selection-box-shadow;
+                }
+
+                @if $transitions != false
+                {
+                    @include transition(
+                        (background-color $transition-timing $transition-duration $transition-delay),
+                        (color $transition-timing $transition-duration $transition-delay),
+                        (border-color $transition-timing $transition-duration $transition-delay),
+                        (border-radius $transition-timing $transition-duration $transition-delay),
+                        (box-shadow $transition-timing $transition-duration $transition-delay)
+                    );
+                }
+
+                #{$hover-prefix} &:hover {
+                    @if $selection-background-color--hover != false
+                    {
+                        background-color: $selection-background-color--hover;
+                    }
+
+                    @if $selection-color--hover != false
+                    {
+                        color: $selection-color--hover;
+                    }
+
+                    @if $selection-border-color--hover != false
+                    {
+                        border-color: $selection-border-color--hover;
+                    }
+
+                    @if $selection-border-radius--hover != false
+                    {
+                        border-radius: $selection-border-radius--hover;
+                    }
+
+                    @if $selection-box-shadow--hover != false
+                    {
+                        box-shadow: $selection-box-shadow--hover;
+                    }
+                }
+            }
+
+            .selection-list-selection-remove {
+                @if $selection-remove-width != false
+                {
+                    width: $selection-remove-width;
+                }
+
+                @if $selection-remove-height != false
+                {
+                    height: $selection-remove-height;
+                }
+
+                @if $selection-remove-stroke-width != false
+                {
+                    &:before {
+                        width: $selection-remove-stroke-width;
+                    }
+
+                    &:after {
+                        height: $selection-remove-stroke-width;
+                    }
+                }
+
+                &:before,
+                &:after {
+                    @if $selection-remove-color != false
+                    {
+                        background-color: $selection-remove-color;
+
+                        @if $transitions != false
+                        {
+                            @include transition(
+                                (background-color $transition-timing $transition-duration $transition-delay)
+                            );
+                        }
+                    }
+                }
+            }
+        }
+
+        #{$hover-prefix} & .selection-list-selection:hover .selection-list-selection-remove {
+            @if $selection-remove-color--hover != false
+            {
+                &:before,
+                &:after {
+                    background-color: $selection-remove-color--hover;
+                }
+            }
+        }
+    }
 }
