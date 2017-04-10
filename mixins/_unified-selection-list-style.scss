@@ -113,7 +113,7 @@
 
                     @if $toggle-border-color--hover != false
                     {
-                        border: $toggle-border-color--hover;
+                        border-color: $toggle-border-color--hover;
                     }
 
                     @if $toggle-border-radius--hover != false
@@ -140,7 +140,7 @@
 
                     @if $toggle-border-color--active != false
                     {
-                        border: $toggle-border-color--active;
+                        border-color: $toggle-border-color--active;
                     }
 
                     @if $toggle-border-radius--active != false
