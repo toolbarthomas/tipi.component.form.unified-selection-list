@@ -30,7 +30,7 @@
      * Selection List - Javascript function written with jQuery for creating a selection list with checkboxes
      */
 
-    window.setSelectionList = function()
+    window.setUnifiedSelectionList = function()
     {
         var selection_list = $('.' + data.classes.selection_list).not('.' + data.states.ready);
 
@@ -41,31 +41,31 @@
 
         //Define the events we need to use so they can be shared by other scripts
         $(document).on({
-            'tipi.selectionList.open' : function(event, selection_list)
+            'tipi.UnifiedSelectionList.open' : function(event, selection_list)
             {
-                openSelectionList(selection_list);
+                openUnifiedSelectionList(selection_list);
             },
-            'tipi.selectionList.close' : function(event, selection_list)
+            'tipi.unifiedSelectionList.close' : function(event, selection_list)
             {
-                closeSelectionList(selection_list);
+                closeUnifiedSelectionList(selection_list);
             },
-            'tipi.selectionList.toggle' : function(event, input)
+            'tipi.unifiedSelectionList.toggle' : function(event, input)
             {
-                toggleSelectionListCheckbox(input);
+                toggleUnifiedSelectionListCheckbox(input);
             },
-            'tipi.selectionList.focus' : function(event, input)
+            'tipi.unifiedSelectionList.focus' : function(event, input)
             {
-                focusSelectionListCheckbox(input);
+                focusUnifiedSelectionListCheckbox(input);
             },
-            'tipi.selectionList.blur' : function(event, input)
+            'tipi.unifiedSelectionList.blur' : function(event, input)
             {
-                blurSelectionListCheckbox(input, selection_list);
+                blurUnifiedSelectionListCheckbox(input, selection_list);
             },
-            'tipi.selectionList.change' : function(event, input, selection_list)
+            'tipi.unifiedSelectionList.change' : function(event, input, selection_list)
             {
-                changeSelectionListCheckbox(input, selection_list);
-                updateSelectionListSelections(input, selection_list);
-                countSelectionListSelection(selection_list);
+                changeUnifiedSelectionListCheckbox(input, selection_list);
+                updateUnifiedSelectionListSelections(input, selection_list);
+                countUnifiedSelectionListSelection(selection_list);
             },
             'tipi.selectionList.update' : function(event, selection_list)
             {
@@ -73,7 +73,7 @@
             },
             'tipi.selectionList.init' : function(event, selection_list)
             {
-                generateSelectionListCheckboxIndex(selection_list);
+                generateUnifiedSelectionListCheckboxIndex(selection_list);
                 generateSelectionListSelections(selection_list);
             }
         });
@@ -81,7 +81,7 @@
         $('body').on({
             click : function(event)
             {
-                clickedWithinSelectionList(event, selection_list);
+                clickedWithinUnifiedSelectionList(event, selection_list);
             }
         });
 
@@ -106,11 +106,11 @@
 
                     if(selection_list.hasClass(data.states.active))
                     {
-                        $(document).trigger('tipi.selectionList.close', [selection_list]);
+                        $(document).trigger('tipi.unifiedSelectionList.close', [selection_list]);
                     }
                     else
                     {
-                        $(document).trigger('tipi.selectionList.open', [selection_list]);
+                        $(document).trigger('tipi.UnifiedSelectionList.open', [selection_list]);
                     }
                 }
             });
@@ -120,7 +120,7 @@
                     var checkbox = $(this);
                     var input = checkbox.find('input:checkbox');
 
-                    $(document).trigger('tipi.selectionList.toggle', [input]);
+                    $(document).trigger('tipi.unifiedSelectionList.toggle', [input]);
                 }
             });
 
@@ -138,20 +138,20 @@
                     var input = $(this);
                     var selection_list = input.closest('.' + data.classes.selection_list);
 
-                    $(document).trigger('tipi.selectionList.open', [selection_list]);
-                    $(document).trigger('tipi.selectionList.focus', [input, selection_list]);
+                    $(document).trigger('tipi.UnifiedSelectionList.open', [selection_list]);
+                    $(document).trigger('tipi.unifiedSelectionList.focus', [input, selection_list]);
                 },
                 blur : function() {
                     var input = $(this);
                     var selection_list = input.closest('.' + data.classes.selection_list);
 
-                    $(document).trigger('tipi.selectionList.blur', [input, selection_list]);
+                    $(document).trigger('tipi.unifiedSelectionList.blur', [input, selection_list]);
                 },
                 change : function() {
                     var input = $(this);
                     var selection_list = input.closest('.' + data.classes.selection_list);
 
-                    $(document).trigger('tipi.selectionList.change', [input, selection_list]);
+                    $(document).trigger('tipi.unifiedSelectionList.change', [input, selection_list]);
                 }
             });
 
@@ -164,12 +164,12 @@
 
     }
 
-    function openSelectionList(selection_list)
+    function openUnifiedSelectionList(selection_list)
     {
         selection_list.addClass(data.states.active);
     }
 
-    function closeSelectionList(selection_list)
+    function closeUnifiedSelectionList(selection_list)
     {
         selection_list.removeClass(data.states.active);
 
@@ -180,7 +180,7 @@
         }
     }
 
-    function toggleSelectionListCheckbox(input)
+    function toggleUnifiedSelectionListCheckbox(input)
     {
         if(input.prop('checked'))
         {
@@ -194,7 +194,7 @@
         input.trigger('change');
     }
 
-    function focusSelectionListCheckbox(input)
+    function focusUnifiedSelectionListCheckbox(input)
     {
         var checkbox = input.closest('.' + data.classes.selection_list_checkbox);
 
@@ -206,7 +206,7 @@
         checkbox.addClass(data.states.checkbox_focus);
     }
 
-    function blurSelectionListCheckbox(input)
+    function blurUnifiedSelectionListCheckbox(input)
     {
         var checkbox = input.closest('.' + data.classes.selection_list_checkbox);
 
@@ -218,7 +218,7 @@
         checkbox.removeClass(data.states.checkbox_focus);
     }
 
-    function changeSelectionListCheckbox(input)
+    function changeUnifiedSelectionListCheckbox(input)
     {
         var checkbox = input.closest('.' + data.classes.selection_list_checkbox);
 
@@ -242,7 +242,7 @@
         //Check if we have an actual index
         if(typeof index == 'undefined')
         {
-            generateSelectionListCheckboxIndex(selection_list);
+            generateUnifiedSelectionListCheckboxIndex(selection_list);
             index = checkbox.data(data.attributs.checkbox_index);
         }
 
@@ -254,7 +254,7 @@
         return index;
     }
 
-    function generateSelectionListCheckboxIndex(selection_list)
+    function generateUnifiedSelectionListCheckboxIndex(selection_list)
     {
         selection_list_checkbox = selection_list.find('input:checkbox');
 
@@ -326,7 +326,7 @@
         });
     }
 
-    function updateSelectionListSelections(input, selection_list)
+    function updateUnifiedSelectionListSelections(input, selection_list)
     {
         var index = getSelectionListCheckboxIndex(input, selection_list);
 
@@ -351,7 +351,7 @@
         }
     }
 
-    function countSelectionListSelection(selection_list)
+    function countUnifiedSelectionListSelection(selection_list)
     {
         var toggle_label = selection_list.find('.' + data.classes.selection_list_toggle_label);
         if(toggle_label.length === 0)
@@ -392,7 +392,7 @@
          }
     }
 
-    function clickedWithinSelectionList(event, selection_list)
+    function clickedWithinUnifiedSelectionList(event, selection_list)
     {
         var target = event.target;
 
@@ -424,7 +424,7 @@
         }
 
         selection_list.each(function() {
-            $(document).trigger('tipi.selectionList.close', [$(this)]);
+            $(document).trigger('tipi.unifiedSelectionList.close', [$(this)]);
         });
     }
 
