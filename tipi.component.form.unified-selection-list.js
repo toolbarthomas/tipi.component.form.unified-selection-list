@@ -41,7 +41,7 @@
         }
 
         //Define the events we need to use so they can be shared by other scripts
-        $(document).on({
+        $(document).off('tipi.UnifiedSelectionList.open tipi.unifiedSelectionList.close tipi.unifiedSelectionList.toggle tipi.unifiedSelectionList.toggle tipi.unifiedSelectionList.focus tipi.unifiedSelectionList.blur tipi.unifiedSelectionList.change tipi.selectionList.update tipi.selectionList.init').on({
             'tipi.UnifiedSelectionList.open' : function(event, selection_list)
             {
                 openUnifiedSelectionList(selection_list);
