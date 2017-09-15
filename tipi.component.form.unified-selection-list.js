@@ -389,7 +389,7 @@
                 continue;
             }
 
-            unified_select_filter_input.attr(key, attributes[key]);
+            selection_list_filter_input.attr(key, attributes[key]);
         }
 
         var timeout;
