@@ -63,6 +63,10 @@
             font-style: inherit;
             cursor: inherit;
         }
+
+        &.__selection-list-checkbox--hide {
+            display: none;
+        }
     }
 
     .selection-list-checkbox-control {

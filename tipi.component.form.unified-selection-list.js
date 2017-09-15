@@ -76,6 +76,8 @@
             {
                 generateUnifiedSelectionListCheckboxIndex(selection_list);
                 generateSelectionListSelections(selection_list);
+                generateSelectionListFilterData(selection_list);
+                generateSelectionListFilter(selection_list);
                 changeUnifiedSelectionListCheckbox(input);
                 updateUnifiedSelectionListSelections(input, selection_list);
                 countUnifiedSelectionListSelection(selection_list);
@@ -341,6 +343,120 @@
                 input.eq(index).prop('checked', false).trigger('change');
             }
         });
+    }
+
+    function generateSelectionListFilterData(selection_list) {
+        var selection_list_checkbox = selection_list.find('.selection-list-checkbox');
+
+        var json_data = [];
+
+        selection_list_checkbox.each(function() {
+            var checkbox = $(this);
+
+            //Define a label we can use for setting the selections
+            var label = checkbox.data(data.attributes.checkbox_label);
+            if (typeof label === 'undefined') {
+                label = $.trim(checkbox.find('.' + data.classes.selection_list_checkbox_label).text());
+            }
+
+            json_data.push(label);
+        });
+
+        selection_list.data('json_data', json_data);
+    }
+
+    function generateSelectionListFilter(selection_list) {
+        // Cancel if we have no json data to filter
+        if (typeof selection_list.data('json_data') === 'undefined') {
+            return;
+        }
+
+        var selection_list_wrapper = selection_list.find('.selection-list-wrapper');
+        if (selection_list_wrapper.length === 0) {
+            return;
+        }
+
+        selection_list_wrapper.prepend('<div class="selection-list-filter"><input type="text" class="selection-list-filter-input" /></div>');
+        var selection_list_filter_input = selection_list_wrapper.find('.selection-list-filter-input');
+
+        var attributes = {
+            placeholder: selection_list.data('selection-list-filter-placeholder')
+        };
+
+        // Append each attribute to the filter input
+        for (var key in attributes) {
+            if (typeof attributes[key] === 'undefined' || attributes[key] === '') {
+                continue;
+            }
+
+            unified_select_filter_input.attr(key, attributes[key]);
+        }
+
+        var timeout;
+        selection_list_filter_input.on({
+            'keyup keydown': function (event) {
+                var filter = $(this);
+
+                if (event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                }
+
+                clearTimeout(timeout);
+                timeout = setTimeout(function () {
+                    filterSelectionList(filter);
+
+                }, 100);
+            },
+            'keyup': function (event) {
+                event.preventDefault();
+
+            }
+        });
+    }
+
+    // Filter the input
+    function filterSelectionList(input) {
+        var selection_list = input.closest('.selection-list');
+        if (selection_list.length === 0) {
+            return;
+        }
+
+        var json_data = selection_list.data('json_data');
+        if (typeof json_data === 'undefined') {
+            return;
+        }
+
+        if (json_data.length === 0) {
+            return;
+        }
+
+        var term = String(input.val());
+        var query = term.toUpperCase();
+
+        var found_indexes = [];
+
+        var results = $.grep(json_data, function (value, index) {
+            if (String(value).toUpperCase().indexOf(query) >= 0) {
+                found_indexes.push(index);
+                return;
+            }
+        });
+
+        var selection_list_checkbox = selection_list.find('.selection-list-checkbox');
+        //Hide all 
+        selection_list_checkbox.removeClass('__selection-list-checkbox--hide');
+
+        if (found_indexes.length === 0) {
+            return;
+        }
+
+        // Remove the found items from the array
+        for (var i = found_indexes.length - 1; i >= 0; i--) {
+            selection_list_checkbox.splice(found_indexes[i], 1);
+        }
+
+        selection_list_checkbox.addClass('__selection-list-checkbox--hide');
     }
 
     function updateUnifiedSelectionListSelections(input, selection_list)
