@@ -312,7 +312,7 @@
             var label = toggle.data(data.attributes.checkbox_label);
             if(typeof label === 'undefined')
             {
-                label = toggle.find('.' + data.classes.selection_list_checkbox_label).html();
+                label = toggle.find('.' + data.classes.selection_list_checkbox_label).text();
             }
 
             selection_list_selections.append('<div class="' + data.classes.selection_list_selection + '">' + label + '<span class="' + data.classes.selection_list_selection_remove + '"></span></div>');
@@ -383,7 +383,7 @@
         //Check if we have defined a label with a data attribute, or use the label from innerHtml and cache it!
         if(typeof label === 'undefined')
         {
-            label = toggle_label.html();
+            label = toggle_label.text();
             selection_list.data(data.attributes.selection_label, label);
         }
 
@@ -404,13 +404,13 @@
 
          if(count === 0)
          {
-            toggle_label.html(label);
+            toggle_label.text(label);
 
             selection_list.removeClass(data.states.selections_active);
          }
          else
          {
-            toggle_label.html(' ' + label + prefix + count + suffix);
+            toggle_label.text(' ' + label + prefix + count + suffix);
 
             selection_list.addClass(data.states.selections_active);
          }
